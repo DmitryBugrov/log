@@ -32,16 +32,12 @@ func Print(ll int, msg ...string) {
 	if ll >= logLevel {
 		switch ll {
 		case LogLevelError:
-			//	Error.Println(out)
 			fmt.Println(tmestamp, "[Error]", func_and_line, msg)
 		case LogLevelWarning:
-			//	Warning.Println(out)
 			fmt.Println(tmestamp, "[Warning]", func_and_line, msg)
 		case LogLevelInfo:
-			//	Info.Println(out)
 			fmt.Println(tmestamp, "[Info]", func_and_line, msg)
 		case LogLevelTrace:
-			//	Trace.Println(out)
 			fmt.Println(tmestamp, "[Trace]", func_and_line, msg)
 		}
 

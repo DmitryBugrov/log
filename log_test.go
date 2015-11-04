@@ -1,11 +1,17 @@
 package log
 
-/*import (
-	"log"
-)*/
+import "testing"
 
-func main() {
-	log.Init(log.LogLevelTrace)
-	log.Print()
+func TestLoglevelTrace(t *testing.T) {
+	Init(LogLevelTrace)
+	Print(LogLevelTrace, "Test trace message")
+	Print(LogLevelError, "Test error message")
+
+}
+
+func TestLoglevelError(t *testing.T) {
+	Init(LogLevelError)
+	Print(LogLevelTrace, "Test trace message")
+	Print(LogLevelError, "Test error message")
 
 }
