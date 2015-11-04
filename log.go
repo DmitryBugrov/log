@@ -15,12 +15,12 @@ const (
 )
 
 var (
-	LogLevel int = 3
+	logLevel int = 3
 )
 
 //Init Log
 func Init(ll int) {
-	LogLevel = ll
+	logLevel = ll
 
 }
 
@@ -29,7 +29,7 @@ func Print(ll int, msg ...string) {
 	pc, _, line, _ := runtime.Caller(1)
 	func_and_line := runtime.FuncForPC(pc).Name() + ":" + strconv.Itoa(line)
 	tmestamp := time.Now().Format(time.StampMilli)
-	if ll >= LogLevel {
+	if ll >= logLevel {
 		switch ll {
 		case LogLevelError:
 			//	Error.Println(out)
