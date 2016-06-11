@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"runtime"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -14,13 +15,6 @@ const (
 	LogLevelError
 )
 
-//var (
-//	logLevel int = 3
-//	funcName = true
-//	line =true
-//	timeStamp=true
-//)
-
 type Log struct {
 	logLevel  int
 	funcName  bool
@@ -29,71 +23,76 @@ type Log struct {
 }
 
 //Init Log
-func (self *Log) Init(ll int, param ...bool) {
+//Init(LogLevel Log,funcName bool,line bool,timeStamp boot)
+func (l *Log) Init(ll int, param ...bool) bool {
 	//	logLevel = ll
 	switch len(param) {
 	case 0:
-		self.funcName = true
-		self.line = true
-		self.timeStamp = true
+		l.funcName = true
+		l.line = true
+		l.timeStamp = true
 	case 1:
-		self.funcName = param[0]
-		self.line = true
-		self.timeStamp = true
+		l.funcName = param[0]
+		l.line = true
+		l.timeStamp = true
 	case 2:
-		self.funcName = param[0]
-		self.line = param[1]
-		self.timeStamp = true
+		l.funcName = param[0]
+		l.line = param[1]
+		l.timeStamp = true
 	case 3:
-		self.funcName = param[0]
-		self.line = param[1]
-		self.timeStamp = param[2]
+		l.funcName = param[0]
+		l.line = param[1]
+		l.timeStamp = param[2]
+	default:
+		return false
 	}
-	//	if len(param) >0 nil {
-	//		funcName = param[0]
-	//	} else {
-	//		funcName = true
-	//	}
-	//	if param[1] != nil {
-	//		line = param[1]
-	//	} else {
-	//		line = true
-	//	}
-	//	if param[2] != nil {
-	//		timeStamp = param[2]
-	//	} else {
-	//		timeStamp = true
-	//	}
-
+	return true
 }
 
 //Print log message
-func (self *Log) Print(ll int, msg ...interface{}) {
+func (l *Log) Print(ll int, msg ...interface{}) string {
 	pc, _, num_line, _ := runtime.Caller(1)
-	//func_and_line := runtime.FuncForPC(pc).Name() + ":" + strconv.Itoa(line)
+
 	var tmestamp, funcNameStr, lineStr string
-	if self.timeStamp {
+	if l.timeStamp {
 		tmestamp = time.Now().Format(time.StampMilli)
 	}
-	if self.funcName {
+	if l.funcName {
 		funcNameStr = runtime.FuncForPC(pc).Name()
 	}
-	if self.line {
+	if l.line {
 		lineStr = ":" + strconv.Itoa(num_line)
 	}
 
-	if ll >= self.logLevel {
+	result := ""
+	if ll >= l.logLevel {
 		switch ll {
 		case LogLevelError:
-			fmt.Println(tmestamp, "[Error]", funcNameStr, lineStr, msg)
+			result = tmestamp + " [Error] " + funcNameStr + lineStr + strings.Join(interfaceToString(msg)[:], "")
 		case LogLevelWarning:
-			fmt.Println(tmestamp, "[Warning]", funcNameStr, lineStr, msg)
+			result = tmestamp + " [Warning] " + funcNameStr + lineStr + strings.Join(interfaceToString(msg)[:], "")
 		case LogLevelInfo:
-			fmt.Println(tmestamp, "[Info]", funcNameStr, lineStr, msg)
+			result = tmestamp + " [Info] " + funcNameStr + lineStr + strings.Join(interfaceToString(msg)[:], "")
 		case LogLevelTrace:
-			fmt.Println(tmestamp, "[Trace]", funcNameStr, lineStr, msg)
+			result = tmestamp + " [Trace] " + funcNameStr + lineStr + strings.Join(interfaceToString(msg)[:], "")
 		}
 
 	}
+	if result != "" {
+		fmtPrint(result)
+	}
+	return result
 
+}
+
+func interfaceToString(a []interface{}) []string {
+	result := make([]string, len(a))
+	for i := range a {
+		result[i] = " " + a[i].(string)
+	}
+	return result
+}
+
+func fmtPrint(msg string) {
+	fmt.Println(msg)
 }
